@@ -78,6 +78,7 @@ public class Panel_Main : MonoBehaviour {
 
         idx = 0;
         showText = new StringBuilder();
+        print(data.content);
     }
 
 
