@@ -652,8 +652,6 @@ public class NGUILabel : NGUIWidget
             int scaleHack = fontSize;
             NGUIFont f = mFont;
             while (f.replacement != null) f = f.replacement;
-            if (f.isDynamic)
-                scaleHack = (int)(scaleHack * 0.9f);
             scaleHack -= scaleHack % 2;
 
             Vector3 scale = cachedTransform.localScale;
@@ -853,7 +851,7 @@ public class NGUILabel : NGUIWidget
                 float maxSize = (float)mMaxLineWidth / scale;
                 scale = (mSize.x > maxSize) ? (maxSize / mSize.x) * scale : scale;
                 cachedTransform.localScale = new Vector3(scale, scale, 1f);
-                int tfontSize = (int)(scale / 0.9f);
+                int tfontSize = (int)scale;
                 tfontSize = tfontSize - tfontSize % 2;
                 fontSize = tfontSize;
             }

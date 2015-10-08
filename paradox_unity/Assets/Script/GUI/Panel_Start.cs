@@ -6,6 +6,8 @@ public class Panel_Start : MonoBehaviour {
     [SerializeField]
     private XUIButton m_StartUpBtn;
 
+    [SerializeField]
+    private GameObject m_MenuGroup;
 
     [SerializeField]
     private XUIButton m_NewGameBtn;
@@ -34,12 +36,18 @@ public class Panel_Start : MonoBehaviour {
 
         ResourceManager.LoadIcon("start" + idx, m_Bg);
 
+
+        m_StartUpBtn.AddClickDelegate(startUpDelegate);
+        m_MenuGroup.SetActive(false);
+
+        m_NewGameBtn.AddClickDelegate(startDelegate);
 	}
 
 
     private void startUpDelegate(GameObject obj)
     {
-
+        m_StartUpBtn.gameObject.SetActive(false);
+        m_MenuGroup.SetActive(true);
     }
 
     private void startDelegate(GameObject obj)

@@ -32,7 +32,7 @@ public class MainGame : MonoBehaviour {
     {
         init();
 
-        //show startup
+        UIManager.ShowPanel("Start_Panel");
 	}
 	
 	
@@ -65,7 +65,7 @@ public class MainGame : MonoBehaviour {
 
     public void createNewGame()
     {
-        currentFlag.SetAll(false);
+        currentFlag = new BitArray(80, false);
         if (PlayerData.GetEndingFlag(1)) currentFlag[1] = true;
         if (PlayerData.GetEndingFlag(2)) currentFlag[2] = true;
         if (PlayerData.GetEndingFlag(3)) currentFlag[3] = true;
@@ -78,7 +78,7 @@ public class MainGame : MonoBehaviour {
 
     private void init()
     {
-        //parseData();
+        parseData();
 
         PlayerData.Load();
     }
@@ -86,7 +86,7 @@ public class MainGame : MonoBehaviour {
 
     private void startGame()
     {
-
+        UIManager.ShowPanel("Main_Panel");
     }
 
 
@@ -96,7 +96,7 @@ public class MainGame : MonoBehaviour {
         text.Clear();
 
         //Skip first three lines.
-        for (int i = 2; i < itemRowsList.Length; ++i)
+        for (int i = 3; i < itemRowsList.Length; ++i)
         {
             string[] itemColumnsList = itemRowsList[i].Split('\t');
             if (itemColumnsList.Length < 3)

@@ -26,17 +26,21 @@ public class Panel_Main : MonoBehaviour {
     private StringBuilder showText;
     private float waitTime = 0;
 
-    private bool inPause = true;
+    private bool inPause = false;
 
 	// Use this for initialization
-	void Start () {
-	
+	void Start () 
+    {
+        m_NextBtn.AddClickDelegate(nextDelegate);
+
+        next();
 	}
 	
 	// Update is called once per frame
 	void Update () 
     {
         if (data == null) return;
+
 
         if (Time.time < waitTime || inPause) return;
 
@@ -55,6 +59,7 @@ public class Panel_Main : MonoBehaviour {
                 showText.Append(c);
                 m_ShowText.text = showText.ToString();
                 waitTime = Time.time + 0.1f;
+                idx++;
             }
         }
 	}
@@ -81,5 +86,12 @@ public class Panel_Main : MonoBehaviour {
     private void nextDelegate(GameObject obj)
     {
         inPause = false;
+
+        if (idx >= data.content.Length)
+        {
+            PlayerData.SetTextFlag(MainGame.instance.currentID);
+            MainGame.instance.currentID = data.next;
+            next();
+        }
     }
 }

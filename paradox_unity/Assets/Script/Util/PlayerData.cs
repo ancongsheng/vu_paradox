@@ -72,6 +72,10 @@ public class PlayerData  {
         return instance.endingflag.Get(id);
     }
 
+    public static void SetTextFlag(int id)
+    {
+        instance.textflag[id] = true;
+    }
 
 
     private PlayerData()
