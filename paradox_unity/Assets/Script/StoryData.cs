@@ -14,7 +14,7 @@ public class StoryData
     {
         id = int.Parse(itemInfoList[0]);
         name = itemInfoList[1];
-        content = itemInfoList[2];
+        content = itemInfoList[2].Replace("\\n", "\n");
         type = int.Parse(itemInfoList[3]);
         next = int.Parse(itemInfoList[4]);
     }

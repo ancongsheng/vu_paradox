@@ -55,9 +55,9 @@ public class Panel_Main : MonoBehaviour {
         if (idx < data.content.Length)
         {
             char c = data.content[idx];
-            if (c == '#')
+            if (c == '$')
             {
-                int idx2 = data.content.IndexOf('#', idx + 1);
+                int idx2 = data.content.IndexOf('$', idx + 1);
                 string cmd = data.content.Substring(idx + 1, idx2 - idx - 1);
                 processCmd(cmd);
                 idx = idx2 + 1;
@@ -77,7 +77,7 @@ public class Panel_Main : MonoBehaviour {
             {
                 showText.Append(c);
                 m_ShowText.text = showText.ToString();
-                waitTime = Time.time + 0.1f;
+                waitTime = Time.time + 0.05f;
                 idx++;
             }
         }
@@ -92,9 +92,14 @@ public class Panel_Main : MonoBehaviour {
         Debug.Log(cmd);
         waitTime = Time.time + 1f;
 
-        if (cmd == "pause")
+        if (cmd == "p")
         {
             waitNext();
+        }
+        else if (cmd.StartsWith("ch"))
+        {
+            string chName = cmd.Substring(cmd.IndexOf(':') + 1);
+            showCharacter(chName);
         }
     }
 
@@ -177,5 +182,12 @@ public class Panel_Main : MonoBehaviour {
             inPause = true;
             m_NextBtn.gameObject.SetActive(true);
         }
+    }
+
+    private void showCharacter(string name)
+    {
+        ResourceManager.LoadIcon(name, m_CharaTex);
+        m_CharaTex.alpha = 0;
+        TweenAlpha.Begin(m_CharaTex.gameObject, 1f, 1);
     }
 }
