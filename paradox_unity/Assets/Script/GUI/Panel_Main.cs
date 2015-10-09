@@ -19,6 +19,9 @@ public class Panel_Main : MonoBehaviour {
     [SerializeField]
     private XUIButton m_MenuBtn;
 
+    [SerializeField]
+    private SelectPanel m_SelectPanel;
+
 
 
     private StoryData data = null;
@@ -27,11 +30,16 @@ public class Panel_Main : MonoBehaviour {
     private float waitTime = 0;
 
     private bool inPause = false;
+    private bool skipRead = true;
 
 	// Use this for initialization
 	void Start () 
     {
         m_NextBtn.AddClickDelegate(nextDelegate);
+        m_SelectPanel.onSelectEnd += onSelectEnd;
+
+
+        m_SelectPanel.gameObject.SetActive(false);
 
         next();
 	}
@@ -50,9 +58,20 @@ public class Panel_Main : MonoBehaviour {
             if (c == '#')
             {
                 int idx2 = data.content.IndexOf('#', idx + 1);
-                string cmd = data.content.Substring(idx, idx2 - idx);
+                string cmd = data.content.Substring(idx + 1, idx2 - idx - 1);
                 processCmd(cmd);
-                idx = idx2;
+                idx = idx2 + 1;
+            }
+            else if (c == '[')//for ngui color label
+            {
+                while (c != ']')
+                {
+                    showText.Append(c);
+                    idx++;
+                    c = data.content[idx];
+                }
+                showText.Append(c);
+                m_ShowText.text = showText.ToString();
             }
             else
             {
@@ -62,6 +81,10 @@ public class Panel_Main : MonoBehaviour {
                 idx++;
             }
         }
+        else
+        {
+            waitNext();
+        }
 	}
 
     private void processCmd(string cmd)
@@ -69,16 +92,51 @@ public class Panel_Main : MonoBehaviour {
         Debug.Log(cmd);
         waitTime = Time.time + 1f;
 
-        if (cmd == "#pause#") inPause = true;
+        if (cmd == "pause")
+        {
+            waitNext();
+        }
     }
 
     private void next()
     {
         data = MainGame.instance.text[MainGame.instance.currentID];
 
+        if (skipRead && PlayerData.GetTextFlag(MainGame.instance.currentID))
+        {
+            Time.timeScale = 10f;
+        }
+        else
+        {
+            Time.timeScale = 1f;
+        }
+
         idx = 0;
         showText = new StringBuilder();
-        print(data.content);
+        m_NextBtn.gameObject.SetActive(false);
+
+        switch (data.type)
+        {
+            case 1:
+                m_SelectPanel.Set(data);
+                inPause = true;
+                m_SelectPanel.Show();
+        	    break;
+            default:
+                m_ShowText.text = string.Empty;
+                if (data.name != string.Empty)
+                {
+                    m_NameGroup.SetActive(true);
+                    m_ShowName.text = data.name;
+                }
+                else
+                {
+                    m_NameGroup.SetActive(false);
+                }
+                inPause = false;
+                break;
+        }
+
     }
 
 
@@ -93,6 +151,29 @@ public class Panel_Main : MonoBehaviour {
             PlayerData.SetTextFlag(MainGame.instance.currentID);
             MainGame.instance.currentID = data.next;
             next();
+        }
+
+        m_NextBtn.gameObject.SetActive(false);
+    }
+
+
+    private void onSelectEnd(int result)
+    {
+        MainGame.instance.currentID = result;
+        next();
+    }
+
+    private void waitNext()
+    {
+        if (skipRead && PlayerData.GetTextFlag(MainGame.instance.currentID))
+        {
+            nextDelegate(null);
+        }
+        else
+        {
+
+            inPause = true;
+            m_NextBtn.gameObject.SetActive(true);
         }
     }
 }
