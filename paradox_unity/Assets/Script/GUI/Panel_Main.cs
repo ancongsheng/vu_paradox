@@ -30,7 +30,7 @@ public class Panel_Main : MonoBehaviour {
     private float waitTime = 0;
 
     private bool inPause = false;
-    private bool skipRead = true;
+    private bool skipRead = false;
 
 	// Use this for initialization
 	void Start () 
@@ -159,7 +159,9 @@ public class Panel_Main : MonoBehaviour {
 
     private void onSelectEnd(int result)
     {
-        MainGame.instance.currentID = result;
+        SelectionData data = MainGame.instance.selection[result];
+        MainGame.instance.currentFlag[result] = true;
+        MainGame.instance.currentID = data.next;
         next();
     }
 

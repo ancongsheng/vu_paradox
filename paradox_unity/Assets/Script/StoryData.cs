@@ -9,7 +9,6 @@ public class StoryData
     public string content;
     public int type;
     public int next;
-    public string param;
 
     public StoryData(string[] itemInfoList)
     {
@@ -18,6 +17,21 @@ public class StoryData
         content = itemInfoList[2];
         type = int.Parse(itemInfoList[3]);
         next = int.Parse(itemInfoList[4]);
-        param = itemInfoList[5];
+    }
+}
+
+public class SelectionData
+{
+    public int id;
+    public string content;
+    public int needFlag;
+    public int next;
+
+    public SelectionData(string[] itemInfoList)
+    {
+        id = int.Parse(itemInfoList[0]);
+        content = itemInfoList[1];
+        next = int.Parse(itemInfoList[2]);
+        needFlag = int.Parse(itemInfoList[3]);
     }
 }

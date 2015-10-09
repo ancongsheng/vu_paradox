@@ -8,12 +8,16 @@ public class SelectItem : MonoBehaviour {
     [SerializeField]
     private NGUILabel m_ShowText;
 
-    public void Set(string _cont, int _id)
+    public void Set(int _id)
     {
-        m_ShowText.text = _cont;
+        SelectionData data = MainGame.instance.selection[_id];
+        m_ShowText.text = data.content;
         id = _id;
 
-        gameObject.SetActive(true);
+        if (data.needFlag > 0 && !MainGame.instance.currentFlag.Get(data.needFlag))
+            gameObject.SetActive(false);
+        else
+            gameObject.SetActive(true);
     }
 
 }

@@ -24,12 +24,11 @@ public class SelectPanel : MonoBehaviour {
     public void Set(StoryData data)
     {
         string[] split = data.content.Split('+');
-        string[] param = data.param.Split('+');
         int i = 0;
 
         for (i = 0; i < split.Length; i++ )
         {
-            m_SelectItems[i].Set(split[i], int.Parse(param[i]));
+            m_SelectItems[i].Set(int.Parse(split[i]));
         }
 
         while (i < m_SelectItems.Count)

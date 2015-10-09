@@ -9,7 +9,7 @@ public class MainGame : MonoBehaviour {
 
 
     public Dictionary<int, StoryData> text = new Dictionary<int, StoryData>();
-
+    public Dictionary<int, SelectionData> selection = new Dictionary<int, SelectionData>();
 
     public BitArray currentFlag;
     public int currentID = 0;
@@ -92,7 +92,7 @@ public class MainGame : MonoBehaviour {
 
     private void parseData()
     {
-        string[] itemRowsList = ResourceManager.LoadText("main");
+        string[] itemRowsList = ResourceManager.LoadText("main.text");
         text.Clear();
 
         //Skip first three lines.
@@ -107,6 +107,24 @@ public class MainGame : MonoBehaviour {
 
             StoryData data = new StoryData(itemColumnsList);
             text.Add(data.id, data);
+
+        }
+
+        itemRowsList = ResourceManager.LoadText("main.selection");
+        selection.Clear();
+
+        //Skip first three lines.
+        for (int i = 3; i < itemRowsList.Length; ++i)
+        {
+            string[] itemColumnsList = itemRowsList[i].Split('\t');
+            if (itemColumnsList.Length < 3)
+            {
+                Debug.LogWarning("The source data seems to have an inconsistent number of columns: " + itemColumnsList.Length);
+                continue;
+            }
+
+            SelectionData data = new SelectionData(itemColumnsList);
+            selection.Add(data.id, data);
 
         }
     }
