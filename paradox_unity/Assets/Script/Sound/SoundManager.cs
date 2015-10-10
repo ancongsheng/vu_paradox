@@ -183,7 +183,7 @@ public class SoundManager : MonoBehaviour {
 
     public void PlaySound(string name)
     {
-        AudioClip ac = Resources.Load(name) as AudioClip;
+        AudioClip ac = Resources.Load("SFX/"+name) as AudioClip;
         m_SoundSource.clip = ac;
         m_SoundSource.Play();
     }

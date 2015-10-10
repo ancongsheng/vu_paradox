@@ -54,17 +54,22 @@ public class ConditionData
     public ConditionData(string[] itemInfoList)
     {
         id = int.Parse(itemInfoList[0]);
-        string[] split = itemInfoList[1].Split('+');
-        int i = 0;
+
         needFlag = new List<int>();
-        for (i = 0; i < split.Length; i++)
+        if (itemInfoList[1] != string.Empty)
         {
-            needFlag.Add(int.Parse(split[i]));
+            string[] split = itemInfoList[1].Split('+');
+            int i = 0;
+            for (i = 0; i < split.Length; i++)
+            {
+                needFlag.Add(int.Parse(split[i]));
+            }
         }
+
 
         needFlagVal = int.Parse(itemInfoList[2]);
         needValueName = int.Parse(itemInfoList[3]);
-        needValueName = int.Parse(itemInfoList[4]);
+        needValueMinVal = int.Parse(itemInfoList[4]);
     }
 }
 

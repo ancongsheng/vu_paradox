@@ -41,11 +41,14 @@ public class Panel_Start : MonoBehaviour {
         m_MenuGroup.SetActive(false);
 
         m_NewGameBtn.AddClickDelegate(startDelegate);
+
+        SoundManager.Instance.PlayMusic("title", true, 1f);
 	}
 
     void OnDestroy()
     {
         m_Bg.mainTexture = null;
+        SoundManager.Instance.StopMusic();
     }
 
 

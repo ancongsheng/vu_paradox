@@ -9,7 +9,7 @@ public class GameTexture : MonoBehaviour {
 
 
 
-    private static Color defaultOverlay = new Color(128, 128, 128);
+    private static Color defaultOverlay = new Color(0.5f, 0.5f, 0.5f);
 
 
     void OnDestroy()
@@ -36,14 +36,19 @@ public class GameTexture : MonoBehaviour {
     {
         if (m_Tex.mainTexture != null)
         {
+            fadeTime /= 2;
             TweenAlpha.Begin(m_Tex.gameObject, fadeTime, 0);
             yield return new WaitForSeconds(fadeTime);
         }
 
         m_Tex.alpha = 0;
-        ResourceManager.LoadIcon(name, m_Tex);
-        TweenAlpha.Begin(m_Tex.gameObject, fadeTime, 1);
-        m_Tex.color = overlayColor;
+        if (name != "null")
+        {
+            ResourceManager.LoadIcon(name, m_Tex);
+            TweenAlpha.Begin(m_Tex.gameObject, fadeTime, 1);
+            //m_Tex.renderer.material.color = overlayColor;
+            m_Tex.color = new Color(overlayColor.r, overlayColor.g, overlayColor.b, m_Tex.alpha);
+        }
         
 
     }
@@ -51,5 +56,6 @@ public class GameTexture : MonoBehaviour {
     public void hide(float fadeTime)
     {
         m_Tex.mainTexture = null;
+        m_Tex.alpha = 0;
     }
 }

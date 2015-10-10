@@ -103,10 +103,7 @@ public class Panel_Main : MonoBehaviour {
         else if (cmd.StartsWith("ch"))
         {
             string chName = cmd.Substring(cmd.IndexOf(':') + 1);
-            if (chName == "null")
-                m_CharaTex.hide(1f);
-            else
-                m_CharaTex.show(chName);
+            m_CharaTex.show(chName);
         }
         else if (cmd.StartsWith("cg"))
         {
@@ -120,15 +117,19 @@ public class Panel_Main : MonoBehaviour {
         }
         else if (cmd.StartsWith("show"))
         {
-            TweenAlpha.Begin(m_BlackScreen.gameObject, 1, 0);
+            float time = float.Parse(cmd.Substring(cmd.IndexOf(':') + 1));
+            m_BlackScreen.alpha = 1;
+            waitTime = Time.time + time;
+            TweenAlpha.Begin(m_BlackScreen.gameObject, time, 0);
         }
         else if (cmd.StartsWith("bgm"))
         {
+            waitTime = Time.time;
             string name = cmd.Substring(cmd.IndexOf(':') + 1);
             if (name == "null")
                 SoundManager.Instance.StopMusic();
             else
-                SoundManager.Instance.PlayMusic(name, true, 3f);
+                SoundManager.Instance.PlayMusic(name, true, 1f);
         }
         else if (cmd.StartsWith("se"))
         {
@@ -242,19 +243,16 @@ public class Panel_Main : MonoBehaviour {
     private void doClear(int type)
     {
         TweenAlpha.Begin(m_BlackScreen.gameObject, 1, 1);
-
-        if (type == 1)
-        {
-            StartCoroutine(clearResCoroutine());
-        }
+        StartCoroutine(clearResCoroutine(type));
     }
 
-    private IEnumerator clearResCoroutine()
+    private IEnumerator clearResCoroutine(int type)
     {
         yield return new WaitForSeconds(1f);
         m_BgTex.hide(0);
         m_CharaTex.hide(0);
-        Resources.UnloadUnusedAssets();
+        if (type == 1)
+            Resources.UnloadUnusedAssets();
     }
 
 }

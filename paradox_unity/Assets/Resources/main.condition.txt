@@ -1,0 +1,7 @@
+INT	STRING	INT	INT	INT
+id	needflag	flagValue	needValueName	value
+id	needflag	flagValue	needValueName	value
+1	1	1	0	0
+2		0	0	0
+3		0	0	0
+4		0	0	0
