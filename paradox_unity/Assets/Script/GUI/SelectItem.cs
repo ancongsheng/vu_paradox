@@ -14,7 +14,7 @@ public class SelectItem : MonoBehaviour {
         m_ShowText.text = data.content;
         id = _id;
 
-        if (data.needFlag > 0 && !MainGame.instance.currentFlag.Get(data.needFlag))
+        if (data.requireId > 0 && !MainGame.instance.checkCondition(data.requireId))
             gameObject.SetActive(false);
         else
             gameObject.SetActive(true);

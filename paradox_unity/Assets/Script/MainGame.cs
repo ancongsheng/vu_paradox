@@ -10,9 +10,11 @@ public class MainGame : MonoBehaviour {
 
     public Dictionary<int, StoryData> text = new Dictionary<int, StoryData>();
     public Dictionary<int, SelectionData> selection = new Dictionary<int, SelectionData>();
+    public Dictionary<int, ConditionData> condition = new Dictionary<int, ConditionData>();
 
     public BitArray currentFlag;
     public int currentID = 0;
+    public Dictionary<GameValueType, int> values = new Dictionary<GameValueType, int>();
 
 
     void Awake()
@@ -57,6 +59,11 @@ public class MainGame : MonoBehaviour {
         byte[] buf = reader.ReadBytes(10);
         currentFlag = new BitArray(buf);
 
+        for (int i = (int)GameValueType.None; i < (int)GameValueType.Max; i++ )
+        {
+            values[(GameValueType)i] = reader.ReadInt32();
+        }
+
         fs.Flush();
         fs.Close();
 
@@ -72,6 +79,25 @@ public class MainGame : MonoBehaviour {
 
         currentID = 1;
         startGame();
+    }
+
+
+    public bool checkCondition(int id)
+    {
+        ConditionData data = condition[id];
+        int flagNum = 0;
+        foreach (var f in data.needFlag)
+        {
+            if (currentFlag[f]) flagNum++;
+        }
+        if (flagNum < data.needFlagVal) return false;
+
+        if (data.needValueName > 0)
+        {
+            if (values[(GameValueType)data.needValueName] < data.needValueMinVal) return false;
+        }
+
+        return true;
     }
 
 
@@ -125,6 +151,24 @@ public class MainGame : MonoBehaviour {
 
             SelectionData data = new SelectionData(itemColumnsList);
             selection.Add(data.id, data);
+
+        }
+
+        itemRowsList = ResourceManager.LoadText("main.condition");
+        condition.Clear();
+
+        //Skip first three lines.
+        for (int i = 3; i < itemRowsList.Length; ++i)
+        {
+            string[] itemColumnsList = itemRowsList[i].Split('\t');
+            if (itemColumnsList.Length < 3)
+            {
+                Debug.LogWarning("The source data seems to have an inconsistent number of columns: " + itemColumnsList.Length);
+                continue;
+            }
+
+            ConditionData data = new ConditionData(itemColumnsList);
+            condition.Add(data.id, data);
 
         }
     }

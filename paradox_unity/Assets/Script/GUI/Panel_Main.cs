@@ -12,7 +12,11 @@ public class Panel_Main : MonoBehaviour {
     private GameObject m_NameGroup;
 
     [SerializeField]
-    private NGUITexture m_CharaTex;
+    private GameTexture m_CharaTex;
+    [SerializeField]
+    private GameTexture m_BgTex;
+    [SerializeField]
+    private NGUISprite m_BlackScreen;
 
     [SerializeField]
     private XUIButton m_NextBtn;
@@ -90,8 +94,8 @@ public class Panel_Main : MonoBehaviour {
     private void processCmd(string cmd)
     {
         Debug.Log(cmd);
-        waitTime = Time.time + 1f;
 
+        waitTime = Time.time + 1f;
         if (cmd == "p")
         {
             waitNext();
@@ -99,7 +103,37 @@ public class Panel_Main : MonoBehaviour {
         else if (cmd.StartsWith("ch"))
         {
             string chName = cmd.Substring(cmd.IndexOf(':') + 1);
-            showCharacter(chName);
+            if (chName == "null")
+                m_CharaTex.hide(1f);
+            else
+                m_CharaTex.show(chName);
+        }
+        else if (cmd.StartsWith("cg"))
+        {
+            string bgName = cmd.Substring(cmd.IndexOf(':') + 1);
+            m_BgTex.show(bgName);
+        }
+        else if (cmd.StartsWith("clear"))
+        {
+            int type = int.Parse(cmd.Substring(cmd.IndexOf(':') + 1));
+            doClear(type);
+        }
+        else if (cmd.StartsWith("show"))
+        {
+            TweenAlpha.Begin(m_BlackScreen.gameObject, 1, 0);
+        }
+        else if (cmd.StartsWith("bgm"))
+        {
+            string name = cmd.Substring(cmd.IndexOf(':') + 1);
+            if (name == "null")
+                SoundManager.Instance.StopMusic();
+            else
+                SoundManager.Instance.PlayMusic(name, true, 3f);
+        }
+        else if (cmd.StartsWith("se"))
+        {
+            string name = cmd.Substring(cmd.IndexOf(':') + 1);
+            SoundManager.Instance.PlaySound(name);
         }
     }
 
@@ -120,13 +154,30 @@ public class Panel_Main : MonoBehaviour {
         showText = new StringBuilder();
         m_NextBtn.gameObject.SetActive(false);
 
-        switch (data.type)
+        switch ((ContentType)data.type)
         {
-            case 1:
+            case ContentType.Select:
                 m_SelectPanel.Set(data);
                 inPause = true;
                 m_SelectPanel.Show();
         	    break;
+            case ContentType.PassiveSelect:
+                string[] split = data.content.Split('+');
+
+                for (int i = 0; i < split.Length; i++)
+                {
+                    int cid = int.Parse(split[i]);
+                    int requireID = MainGame.instance.selection[cid].requireId;
+                    if (MainGame.instance.checkCondition(requireID))
+                    {
+                        onSelectEnd(cid);
+                        return;
+                    }
+                }
+
+                MainGame.instance.currentID = data.next;
+                next();
+                break;
             default:
                 m_ShowText.text = string.Empty;
                 if (data.name != string.Empty)
@@ -165,7 +216,11 @@ public class Panel_Main : MonoBehaviour {
     private void onSelectEnd(int result)
     {
         SelectionData data = MainGame.instance.selection[result];
-        MainGame.instance.currentFlag[result] = true;
+        if (data.setFlag > 0)
+            MainGame.instance.currentFlag[data.setFlag] = true;
+        if (data.addValueName > 0)
+            MainGame.instance.values[(GameValueType)data.addValueName] += data.addValueVal;
+
         MainGame.instance.currentID = data.next;
         next();
     }
@@ -184,10 +239,22 @@ public class Panel_Main : MonoBehaviour {
         }
     }
 
-    private void showCharacter(string name)
+    private void doClear(int type)
     {
-        ResourceManager.LoadIcon(name, m_CharaTex);
-        m_CharaTex.alpha = 0;
-        TweenAlpha.Begin(m_CharaTex.gameObject, 1f, 1);
+        TweenAlpha.Begin(m_BlackScreen.gameObject, 1, 1);
+
+        if (type == 1)
+        {
+            StartCoroutine(clearResCoroutine());
+        }
     }
+
+    private IEnumerator clearResCoroutine()
+    {
+        yield return new WaitForSeconds(1f);
+        m_BgTex.hide(0);
+        m_CharaTex.hide(0);
+        Resources.UnloadUnusedAssets();
+    }
+
 }

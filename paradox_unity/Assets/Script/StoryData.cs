@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class StoryData 
 {
@@ -24,14 +25,79 @@ public class SelectionData
 {
     public int id;
     public string content;
-    public int needFlag;
+    public int requireId;
     public int next;
+    public int addValueName;
+    public int addValueVal;
+    public int setFlag;
 
     public SelectionData(string[] itemInfoList)
     {
         id = int.Parse(itemInfoList[0]);
         content = itemInfoList[1];
         next = int.Parse(itemInfoList[2]);
-        needFlag = int.Parse(itemInfoList[3]);
+        requireId = int.Parse(itemInfoList[3]);
+        addValueName = int.Parse(itemInfoList[4]);
+        addValueVal = int.Parse(itemInfoList[5]);
+        setFlag = int.Parse(itemInfoList[6]);
     }
+}
+
+public class ConditionData
+{
+    public int id;
+    public List<int> needFlag;
+    public int needFlagVal;
+    public int needValueName;
+    public int needValueMinVal;
+
+    public ConditionData(string[] itemInfoList)
+    {
+        id = int.Parse(itemInfoList[0]);
+        string[] split = itemInfoList[1].Split('+');
+        int i = 0;
+        needFlag = new List<int>();
+        for (i = 0; i < split.Length; i++)
+        {
+            needFlag.Add(int.Parse(split[i]));
+        }
+
+        needFlagVal = int.Parse(itemInfoList[2]);
+        needValueName = int.Parse(itemInfoList[3]);
+        needValueName = int.Parse(itemInfoList[4]);
+    }
+}
+
+
+public enum ContentType
+{
+    Default = 0,
+    Select,
+    PassiveSelect,
+}
+
+
+public enum GameValueType
+{
+    None = 0,
+    Naru0,
+    Naru1,
+    Naru2,
+    Naru3,
+    Max,
+}
+
+public enum FlagType
+{
+    None = 0,
+    ED_Naru1,
+    ED_Naru2,
+    ED_Naru3,
+    TE_Naru1,
+    TE_Naru2,
+    TE_Naru3,
+    HE_Naru1,
+    HE_Naru2,
+    HE_Naru3,
+
 }

@@ -21,6 +21,7 @@ public class SoundManager : MonoBehaviour {
 
     AudioSource m_MusicSource;
     AudioSource m_AmbSource;
+    AudioSource m_SoundSource;
     bool ReadyToPlayMusic = false;
     bool ReadyToPlayAmb = false;
     bool StopCurrentMusic = false;
@@ -55,9 +56,11 @@ public class SoundManager : MonoBehaviour {
         listener.gameObject.AddComponent<AudioListener>();
         m_MusicSource = listener.gameObject.AddComponent<AudioSource>();
         m_AmbSource = listener.gameObject.AddComponent<AudioSource>();
+        m_SoundSource = listener.gameObject.AddComponent<AudioSource>();
 
         m_AmbSource.panLevel = 0.0f;
         m_MusicSource.panLevel = 0.0f;
+        m_SoundSource.panLevel = 0.0f;
         //fadeVolume = 0f;
         m_MusicSource.volume = fadeVolume * MainMusicVolume;
         m_AmbSource.volume = MainSoundVolume;
@@ -176,6 +179,13 @@ public class SoundManager : MonoBehaviour {
             source.volume = origVolume * (In ? precent : (1.0f - precent));
             yield return null;
         }
+    }
+
+    public void PlaySound(string name)
+    {
+        AudioClip ac = Resources.Load(name) as AudioClip;
+        m_SoundSource.clip = ac;
+        m_SoundSource.Play();
     }
 
 	// Update is called once per frame
