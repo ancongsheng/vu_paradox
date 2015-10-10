@@ -11,6 +11,12 @@ public class GameTexture : MonoBehaviour {
 
     private static Color defaultOverlay = new Color(128, 128, 128);
 
+
+    void OnDestroy()
+    {
+        m_Tex.mainTexture = null;
+    }
+
 	public void show(string name)
     {
         show(name, 1f);

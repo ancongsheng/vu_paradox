@@ -34,7 +34,7 @@ public class MainGame : MonoBehaviour {
     {
         init();
 
-        UIManager.ShowPanel("Start_Panel");
+        UIManager.ShowPanel("StartUp_Panel");
 	}
 	
 	

@@ -43,6 +43,11 @@ public class Panel_Start : MonoBehaviour {
         m_NewGameBtn.AddClickDelegate(startDelegate);
 	}
 
+    void OnDestroy()
+    {
+        m_Bg.mainTexture = null;
+    }
+
 
     private void startUpDelegate(GameObject obj)
     {
