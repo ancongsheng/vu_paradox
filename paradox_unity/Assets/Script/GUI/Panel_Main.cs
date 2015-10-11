@@ -68,14 +68,11 @@ public class Panel_Main : MonoBehaviour {
             }
             else if (c == '[')//for ngui color label
             {
-                while (c != ']')
-                {
-                    showText.Append(c);
-                    idx++;
-                    c = data.content[idx];
-                }
-                showText.Append(c);
+                int idx2 = data.content.IndexOf(']', idx + 1);
+                string cmd = data.content.Substring(idx, idx2 - idx+1);
+                showText.Append(cmd);
                 m_ShowText.text = showText.ToString();
+                idx = idx2 + 1;
             }
             else
             {
@@ -83,6 +80,7 @@ public class Panel_Main : MonoBehaviour {
                 m_ShowText.text = showText.ToString();
                 waitTime = Time.time + 0.05f;
                 idx++;
+                //UISoundManager.instance.Play("type");
             }
         }
         else
@@ -112,6 +110,7 @@ public class Panel_Main : MonoBehaviour {
         }
         else if (cmd.StartsWith("clear"))
         {
+            waitTime = Time.time + 2f;
             int type = int.Parse(cmd.Substring(cmd.IndexOf(':') + 1));
             doClear(type);
         }
@@ -178,6 +177,10 @@ public class Panel_Main : MonoBehaviour {
 
                 MainGame.instance.currentID = data.next;
                 next();
+                break;
+            case ContentType.End:
+                inPause = true;
+                UIManager.ShowPanel("Ending_Panel");
                 break;
             default:
                 m_ShowText.text = string.Empty;

@@ -79,6 +79,7 @@ public enum ContentType
     Default = 0,
     Select,
     PassiveSelect,
+    End = 10,
 }
 
 
