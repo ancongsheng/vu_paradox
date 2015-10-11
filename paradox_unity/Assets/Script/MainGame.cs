@@ -77,7 +77,7 @@ public class MainGame : MonoBehaviour {
         if (PlayerData.GetEndingFlag(2)) currentFlag[2] = true;
         if (PlayerData.GetEndingFlag(3)) currentFlag[3] = true;
 
-        currentID = 108;
+        currentID = 1;
         startGame();
     }
 
